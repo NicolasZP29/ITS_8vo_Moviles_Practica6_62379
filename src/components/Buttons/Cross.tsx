@@ -1,8 +1,19 @@
 import { useContext } from "react";
 import { EPokedexScreen, MenuPokedexContext } from "../../contexts/MenuPokedexContext";
+import { PokemonContext } from "../../contexts/PokemonContext";
 
 export const Cross = () => {
   const { screen, menuOption, setMenuOption } = useContext(MenuPokedexContext);
+  const { pokemonList, selectedIndex, setSelectedIndex } =
+    useContext(PokemonContext);
+
+  const prevMenu = () => setMenuOption(menuOption - 1 < 1 ? 3 : menuOption - 1);
+  const nextMenu = () => setMenuOption(menuOption + 1 > 3 ? 1 : menuOption + 1);
+
+  const prevPokemon = () =>
+    setSelectedIndex((selectedIndex - 1 + pokemonList.length) % pokemonList.length);
+  const nextPokemon = () =>
+    setSelectedIndex((selectedIndex + 1) % pokemonList.length);  
 
   return (
     <div id="cross">
@@ -13,10 +24,8 @@ export const Cross = () => {
         id="topcross"
         className="gameboy-button"
         onClick={() => {
-          if (screen === EPokedexScreen.MENU) {
-            const newOption = menuOption - 1 < 1 ? 3 : menuOption - 1
-            setMenuOption(newOption)
-          }
+          if (screen === EPokedexScreen.MENU) prevMenu();
+          else if (screen === EPokedexScreen.POKEDEX) prevPokemon();
         }}
       >
         <div id="upT"></div>
@@ -31,10 +40,8 @@ export const Cross = () => {
         id="botcross"
         className="gameboy-button"
         onClick={() => {
-          if (screen === EPokedexScreen.MENU) {
-            const newOption = menuOption + 1 > 3 ? 1 : menuOption + 1
-            setMenuOption(newOption)
-          }
+          if (screen === EPokedexScreen.MENU) nextMenu();
+          else if (screen === EPokedexScreen.POKEDEX) nextPokemon();
         }}
       >
         <div id="downT"></div>
