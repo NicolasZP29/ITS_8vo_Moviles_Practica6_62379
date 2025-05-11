@@ -4,23 +4,39 @@ import {
   useIonRouter
 } from '@ionic/react';
 import React, { useContext } from 'react';
-
 import { EPokedexMenuOption, EPokedexScreen, MenuPokedexContext } from '../contexts/MenuPokedexContext';
 import '../theme/variables.css';
 import { Cross } from './Buttons/Cross';
+import { PokemonContext } from "../contexts/PokemonContext";
+import { ItemsContext } from "../contexts/ItemsContext";
+
 
 const Pokedex: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { menuOption, screen, setMenuOption, setScreen } = useContext(MenuPokedexContext);
   const router = useIonRouter();
+  const { pokemonList, selectedIndex } = useContext(PokemonContext);
+  const { itemsList, selectedItem } = useContext(ItemsContext);
   
   const onBigBlueButtonClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    e.preventDefault();
     if (screen === EPokedexScreen.MENU) {
-      e.preventDefault();
       const path = EPokedexMenuOption[menuOption].toLowerCase();
-      setScreen(menuOption as unknown as EPokedexScreen)
+      setScreen(menuOption as unknown as EPokedexScreen);
       router.push(`/${path}`);
     }
-  }
+    else if (screen === EPokedexScreen.POKEDEX) {
+      
+      const entry = pokemonList[selectedIndex];
+      const segments = entry.url.split('/').filter(x => x);
+      const id = segments[segments.length - 1];         
+      router.push(`/pokedex/${id}`);
+    }
+
+    else if (screen === EPokedexScreen.PACK) {
+      const entry = itemsList[selectedItem];
+      router.push(`/pack/${entry.id}`);
+    }
+};
 
   const toggleScreen = () => {
     if (screen === EPokedexScreen.EXIT) {

@@ -1,35 +1,51 @@
-import React, { useState, useEffect } from "react";
-import axios from "axios";
-
-type Item = { name: string; image: string };
+import React, { useContext, useRef, useEffect } from "react";
+import { ItemsContext } from "../contexts/ItemsContext";
 
 export const ItemsList: React.FC = () => {
-  const [items, setItems] = useState<Item[]>([]);
-  useEffect(() => {
-    axios
-      .get("https://pokeapi.co/api/v2/item?limit=200")
-      .then(res =>
-        Promise.all(
-          res.data.results.map((it: any) =>
-            axios.get(it.url).then(r => ({
-              name: r.data.name,
-              image: r.data.sprites.default,
-            }))
-          )
-        )
-      )
-      .then(setItems);
-  }, []);
+  const { itemsList, selectedItem } = useContext(ItemsContext);
+  const gridRef = useRef<HTMLDivElement>(null);
 
-  if (!items.length) return <p>Cargando objetos…</p>;
+  useEffect(() => {
+    const grid = gridRef.current;
+    if (!grid) return;
+    const cell = grid.children[selectedItem] as HTMLElement | undefined;
+    cell?.scrollIntoView({ block: "nearest", inline: "nearest" });
+  }, [selectedItem]);
+
+  if (!itemsList.length) {
+    return <p className="text-center mt-4">Cargando objetos…</p>;
+  }
+
   return (
-    <div className="items-screen grid grid-cols-4 gap-2 p-2">
-      {items.map((it) => (
-        <div key={it.name} className="text-center">
-          <img src={it.image} alt={it.name} className="mx-auto h-12" />
-          <span className="capitalize text-xs">{it.name}</span>
-        </div>
-      ))}
+    <div className="items-screen w-full h-full p-2 overflow-hidden">
+      <div
+        ref={gridRef}
+        className="grid grid-cols-4 gap-2 h-full overflow-y-auto"
+        onWheel={(e) => e.preventDefault()}
+      >
+        {itemsList.map((it, idx) => {
+          const isSel = idx === selectedItem;
+          return (
+            <div
+              key={it.name}
+              style={{
+                backgroundColor: isSel ? "#FFD33D" : "transparent",
+                borderRadius: isSel ? "0.25rem" : undefined,
+              }}
+              className="text-center p-1"
+            >
+              <img
+                src={it.image}
+                alt={it.name}
+                className="mx-auto h-12 object-contain"
+              />
+              <span className="capitalize text-xs block">
+                {it.name}
+              </span>
+            </div>
+          );
+        })}
+      </div>
     </div>
   );
 };

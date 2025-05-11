@@ -294,6 +294,8 @@ http://ionicframework.com/docs/theming/ */
 
 	div#picture
 	{
+		overflow: hidden;       /* recorta el contenido que sobrepase */
+  		position: relative;     /* para que los elementos hijos puedan ocuparlo al 100% */
 		height: 180px;
 		width: 254px;
 		margin-top: 20px;
@@ -307,6 +309,8 @@ http://ionicframework.com/docs/theming/ */
 		-moz-border-radius: 15px;
 		-o-border-radius: 15px;
 	}
+
+	
 
 	div#picture img
 	{
@@ -1038,3 +1042,15 @@ http://ionicframework.com/docs/theming/ */
   transform: scale(0.95);
   box-shadow: inset 0 0 8px rgba(0, 0, 0, 0.5);
 }
+
+
+.pokedex-screen ul,
+.items-screen .grid {
+  scrollbar-width: none;        
+  -ms-overflow-style: none;     
+}
+.pokedex-screen ul::-webkit-scrollbar,
+.items-screen .grid::-webkit-scrollbar {
+  display: none;                
+}
+

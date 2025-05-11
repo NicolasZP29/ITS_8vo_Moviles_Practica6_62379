@@ -26,6 +26,10 @@ import { PokedexMenu } from './components/Menu/PokedexMenu';
 import { PokemonProvider } from "./contexts/PokemonContext";
 import { PokemonViewer } from "./components/PokemonViewer";
 import { ItemsList } from "./components/ItemsList";
+import { PokemonList } from "./components/PokemonList";
+import { ItemsProvider } from "./contexts/ItemsContext";
+import { ItemViewer } from "./components/ItemViewer";
+
 
 setupIonicReact();
 
@@ -34,20 +38,43 @@ const App: React.FC = () => (
     <IonReactRouter>
       <IonRouterOutlet>
         <MenuPokedexProvider>
-          <Pokedex>
-            <Route exact path="/home">
-              <PokedexMenu />
-            </Route>
-            <Route exact path="/pokedex">
-            </Route>
-            <Route exact path="/pack">
-            </Route>
-            <Route exact path="/exit">
-            </Route>
-            <Route exact path="/">
-              <Redirect to="/home" />
-            </Route>
-          </Pokedex>
+          <PokemonProvider>
+            <ItemsProvider>
+              <Pokedex>
+                <Route exact path="/home">
+                  <PokedexMenu />
+                </Route>
+
+                
+                <Route exact path="/pokedex">
+                  <PokemonList />
+                </Route>
+
+                
+                <Route exact path="/pokedex/:id">
+                  <PokemonViewer />
+                </Route>
+
+                
+                <Route exact path="/pack">
+                  <ItemsList />
+                </Route>
+
+                
+                <Route exact path="/pack/:id">
+                  <ItemViewer />
+                </Route>
+
+                <Route exact path="/exit">
+                  
+                </Route>
+
+                <Route exact path="/">
+                  <Redirect to="/home" />
+                </Route>
+              </Pokedex>
+            </ItemsProvider>  
+          </PokemonProvider>
         </MenuPokedexProvider>
       </IonRouterOutlet>
     </IonReactRouter>
